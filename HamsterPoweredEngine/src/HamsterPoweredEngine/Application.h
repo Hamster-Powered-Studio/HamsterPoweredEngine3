@@ -42,9 +42,10 @@ namespace Hamster
 
             void Close();
 
-            float GetTime();
+            static float GetTime();
             GLFWwindow* GetWindowHandle() const { return m_WindowHandle; }
-            glm::vec2 GetWindowSize();
+            glm::vec2 GetWindowSize() const;
+            static void SetVSync(bool enabled);
         
         private:
             void Init();

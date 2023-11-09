@@ -26,8 +26,16 @@ project "WalnutApp"
         "HamsterPoweredEngine",
     }
 
+
+
+
    targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
    objdir ("../bin-int/" .. outputdir .. "/%{prj.name}")
+
+   postbuildcommands
+   {
+     "{COPYDIR} Resources ../bin/" .. outputdir .. "/%{prj.name}/Resources/"
+   }
 
    filter "system:windows"
       systemversion "latest"
