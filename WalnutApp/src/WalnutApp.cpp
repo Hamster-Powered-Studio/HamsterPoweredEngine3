@@ -4,6 +4,7 @@
 #include "imgui.h"
 #include "HamsterPoweredEngine/Application.h"
 #include "HamsterPoweredEngine/Layer.h"
+#include "HamsterPoweredEngine/Node.h"
 #include "HamsterPoweredEngine/Graphics/Material.h"
 #include "HamsterPoweredEngine/Graphics/RenderTarget2D.h"
 #include "HamsterPoweredEngine/Graphics/ShaderLoader.h"
@@ -67,6 +68,14 @@ public:
 	
 	virtual void OnAttach() override
 	{
+		Node parent("Grungle");
+		Node child("gringok");
+		parent.AddChild(&child);
+		
+		parent.Destroy();
+		std::cout << (child.GetParent() == nullptr) << std::endl;
+		
+		
 		//Construct mesh
 		Buffer = GraphicsResourceManager::ConstructObject<Hamster::VertexBuffer>(verts);
 		Indices = GraphicsResourceManager::ConstructObject<Hamster::IndexBuffer>(indices);
