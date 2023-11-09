@@ -5,7 +5,7 @@
 
 #include "Delegate.h"
 #include "Timestep.h"
-#include "NodeHandle.h"
+
 
 class Node;
 class World;
