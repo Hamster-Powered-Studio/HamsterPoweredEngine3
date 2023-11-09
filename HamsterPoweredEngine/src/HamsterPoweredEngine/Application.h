@@ -6,6 +6,7 @@
 #include <vector>
 #include <memory>
 #include <functional>
+#include <glm/vec2.hpp>
 
 struct GLFWwindow;
 namespace Hamster
@@ -43,6 +44,7 @@ namespace Hamster
 
             float GetTime();
             GLFWwindow* GetWindowHandle() const { return m_WindowHandle; }
+            glm::vec2 GetWindowSize();
         
         private:
             void Init();

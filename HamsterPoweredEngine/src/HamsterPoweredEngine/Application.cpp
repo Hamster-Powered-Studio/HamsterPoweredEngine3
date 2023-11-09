@@ -394,6 +394,13 @@ namespace Hamster {
 		return *s_Instance;
 	}
 
+	glm::vec2 Application::GetWindowSize()
+	{
+		int display_w, display_h;
+		glfwGetFramebufferSize(m_WindowHandle, &display_w, &display_h);
+		return {display_w, display_h};
+	}
+
 	void Application::Init()
 	{
 		// Setup GLFW window
@@ -478,7 +485,7 @@ namespace Hamster {
 	{
 		m_Running = true;
 
-		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+		ImVec4 clear_color = ImVec4(0.2f, 0.2f, 0.2f, 1.00f);
 		ImGuiIO& io = ImGui::GetIO();
 
 		// Main loop
@@ -491,6 +498,12 @@ namespace Hamster {
 			// Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
 			glfwPollEvents();
 
+			int display_w, display_h;
+			glfwGetFramebufferSize(m_WindowHandle, &display_w, &display_h);
+			glViewport(0, 0, display_w, display_h);
+			glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+			glClear(GL_COLOR_BUFFER_BIT);
+			
 			for (auto& layer : m_LayerStack)
 				layer->OnUpdate(m_TimeStep);
 			
@@ -560,11 +573,7 @@ namespace Hamster {
 			// Rendering
 			ImGui::Render();
 			
-			int display_w, display_h;
-			glfwGetFramebufferSize(m_WindowHandle, &display_w, &display_h);
-			glViewport(0, 0, display_w, display_h);
-			glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
-			glClear(GL_COLOR_BUFFER_BIT);
+	
 
 			// Update and Render additional Platform Windows
 			if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)

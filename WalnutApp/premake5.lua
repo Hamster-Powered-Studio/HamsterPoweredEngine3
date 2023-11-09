@@ -11,6 +11,9 @@ project "WalnutApp"
    {
       "../vendor/imgui",
       "../vendor/glfw/include",
+      "../vendor/glad",
+      "../vendor/stb_image",
+      "../vendor/slot_map/slot_map",
 
       "../HamsterPoweredEngine/src",
 

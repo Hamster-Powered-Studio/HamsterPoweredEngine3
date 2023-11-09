@@ -15,6 +15,7 @@ project "HamsterPoweredEngine"
       "../vendor/stb_image",
       "../vendor/imgui",
       "../vendor/glad",
+      "../vendor/slot_map/slot_map",
 
       "%{IncludeDir.glm}",
    }
