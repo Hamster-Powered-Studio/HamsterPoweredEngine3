@@ -18,3 +18,9 @@
 [submodule "vendor/slot_map"]
 	path = vendor/slot_map
 	url = https://github.com/SergeyMakeev/slot_map
+[submodule "vendor/assimp"]
+	path = vendor/assimp
+	url = https://github.com/assimp/assimp
+[submodule "vendor/assimp_premake"]
+	path = vendor/assimp_premake
+	url = https://github.com/Hamster-Powered-Studio/assimp_premake.git

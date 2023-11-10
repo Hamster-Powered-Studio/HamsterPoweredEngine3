@@ -7,10 +7,6 @@
 
 namespace Hamster
 {
-    Material::Material()
-    {
-    }
-
     Material::Material(GLHandle<Shader> _shader)
     {
         // If no shader is provided, load the default shader
@@ -22,6 +18,12 @@ namespace Hamster
         {
             shader = _shader;
         }
+    }
+
+    Material::Material(const Material& other)
+    {
+        parameters = other.parameters;
+        shader = other.shader;
     }
 
 
@@ -46,11 +48,11 @@ namespace Hamster
     {
     }
 
-    void Material::Apply()
+    void Material::Apply() const
     {
         // Bind the shader
         auto shaderRef = shader.Get();
-        shaderRef->Bind();
+        shaderRef->Bind(); 
 
         // Keep track of how many textures we've bound, as they can be bound to any texture unit
         int textureIndex = 0;
@@ -68,7 +70,7 @@ namespace Hamster
             case MaterialParameter::Type::Vec4: shaderRef->SetUniform4f(name, value.vec4Value.x, value.vec4Value.y, value.vec4Value.z, value.vec4Value.w); break;
             case MaterialParameter::Type::Mat4: shaderRef->SetUniformMat4f(name, value.mat4Value); break;
             case MaterialParameter::Type::Sampler2D: 
-                value.sampler2DValue->Bind(textureIndex);
+                value.sampler2DValue.Get()->Bind(textureIndex);
                 shaderRef->SetUniform1i(name, textureIndex);
                 textureIndex++;
                 break;

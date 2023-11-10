@@ -5,7 +5,7 @@ project "HamsterPoweredEngine"
    targetdir "bin/%{cfg.buildcfg}"
    staticruntime "off"
 
-   files { "src/**.h", "src/**.cpp", "../vendor/glad/src/gl.c", "../vendor/imgui/backends/imgui_impl_opengl3.cpp" }
+   files { "src/**.h", "src/**.cpp", "../vendor/glad/src/gl.c", "../vendor/imgui/backends/imgui_impl_opengl3.cpp"}
 
    includedirs
    {
@@ -18,6 +18,8 @@ project "HamsterPoweredEngine"
       "../vendor/slot_map/slot_map",
 
       "%{IncludeDir.glm}",
+      "%{IncludeDir.assimp}",
+      "%{IncludeDir.assimpconfig}"
    }
 
    links
@@ -25,6 +27,7 @@ project "HamsterPoweredEngine"
        "ImGui",
        "GLFW",
        "opengl32",
+       "assimp"
    }
 
    

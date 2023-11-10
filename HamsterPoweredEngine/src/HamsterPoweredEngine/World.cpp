@@ -1,11 +1,17 @@
 ﻿#include "World.h"
 
-TickManager& World::GetWorldTickManager()
+#include <iostream>
+
+World::World(): Node3D()
 {
-    return WorldTickManager;
 }
 
 void World::Tick(const Timestep& ts)
 {
-    WorldTickManager.Tick(ts);
+    _Tick_Internal(ts);
+}
+
+void World::SubmitToRenderer(Hamster::RenderPass& renderPass, const glm::mat4& parentTransform)
+{
+    Node3D::SubmitToRenderer(renderPass, parentTransform * GetTransform());
 }

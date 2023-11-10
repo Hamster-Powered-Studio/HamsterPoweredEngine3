@@ -2,36 +2,61 @@
 
 #include <iostream>
 
+#include "RenderObject.h"
+#include "RenderPass.h"
+
 
 namespace Hamster
 {
-    //void Mesh::OnDraw(RenderTarget2D& _target, const glm::mat4& parentTransform)
-    //{
-        //_target.Draw(vertexArray, material, parentTransform * GetTransform(), drawType);
-    //}
+    /*
+    void Mesh::Draw(const glm::mat4& parentTransform)
+    {
+        vertexArray.Get()->Bind();
+        if (material) material->Apply();
+        glDrawElements(GL_TRIANGLES, indexBuffer.Get()->GetCount(), GL_UNSIGNED_INT, nullptr);
+        vertexArray.Get()->Unbind();
+    }
+    */
+
+    void Mesh::SubmitToRenderer(RenderPass& renderPass, const glm::mat4& parentTransform)
+    {
+        RenderObject renderobject;
+        renderobject.VAO = vertexArray;
+        renderobject.Material = material;
+        renderobject.Transform = parentTransform * GetTransform();
+        renderPass.Submit(renderobject);
+    }
 
     Mesh::Mesh( const std::vector<Vertex>& _vertices, const std::vector<uint32_t>& _indices)
     {
-        //vertexArray = VertexArray();
-        //vertexBuffer = VertexBuffer(_vertices);
-        //indexBuffer = IndexBuffer(_indices);
-        //vertexArray.AddVertexBuffer(&vertexBuffer);
-        //vertexArray.SetIndexBuffer(indexBuffer);
+        vertexArray = GraphicsResourceManager::ConstructObject<VertexArray>();
+        vertexBuffer = GraphicsResourceManager::ConstructObject<VertexBuffer>(_vertices);
+        indexBuffer = GraphicsResourceManager::ConstructObject<IndexBuffer>(_indices);
+        vertexArray.Get()->AddVertexBuffer(vertexBuffer);
+        vertexArray.Get()->SetIndexBuffer(indexBuffer);
+    }
+
+    Mesh::Mesh(const Mesh& other)
+        : ITransformable(other)
+    {
+        vertexArray = other.vertexArray;
+        vertexBuffer = other.vertexBuffer;
+        indexBuffer = other.indexBuffer;
+        material = other.material;
     }
 
     Mesh::~Mesh()
     {
-        
     }
 
     void Mesh::SetVertices(const std::vector<Vertex>& _vertices)
     {
-        vertexBuffer->SetData(_vertices);
+        vertexBuffer.Get()->SetData(_vertices);
     }
 
     void Mesh::SetIndices(const std::vector<uint32_t>& _indices)
     {
-        indexBuffer->SetData(_indices);
+        indexBuffer.Get()->SetData(_indices);
     }
     
 

@@ -1,4 +1,4 @@
-﻿#shader vertex
+#shader vertex
 #version 460 core
 
 in vec3 vPos;
@@ -16,7 +16,6 @@ uniform mat4 uModel;
 uniform mat4 uViewProjection;
 
 
-
 void main() {
     fTexCoord = vTexCoord;
     fColour = vColour;
@@ -26,7 +25,7 @@ void main() {
 
     mat4 modelViewProjection = uViewProjection * uModel;
     gl_Position = modelViewProjection * vec4(vPos, 1.0);
-
+    
     fPos = vec3(uModel * vec4(vPos, 1.0));
 }
 
@@ -39,21 +38,28 @@ in vec3 fPos;
 in vec3 fVertexNormal;
 in vec2 fTexCoord;
 in vec4 fColour;
+in int fTextureIndex;
 in vec3 fWSNormal;
 
 layout (location = 0) out vec4 gFragColour;
-        
+layout (location = 1) out vec4 gNormal;
+layout (location = 2) out vec4 gPosition;
+layout (location = 3) out vec4 gSpecular;
+layout (location = 4) out vec4 gEmission;
+layout (location = 5) out vec4 gDepth;
+
 uniform sampler2D uDiffuse;
-uniform vec4 uColour;
-uniform float uTime;
 
 void main() {
-
+    
     vec3 normal = normalize(fWSNormal);
     
-    float lightFac = dot(normal, vec3(0, 1, 0.5));
-    vec3 colourRamp = mix(vec3(0.1, 0.1, 0.1), uColour.xyz, lightFac);
-    
-    gFragColour = vec4(colourRamp.xyz, 1.0);
+    vec4 diffuse = texture(uDiffuse, fTexCoord);
+
+    gFragColour = vec4(diffuse.xyz, 1.0);
+    gNormal = vec4(normal, 1.0);
+    gPosition = vec4(fPos, 1.0);
+    gEmission = vec4(0, 0, 0, 0);
+    gSpecular = vec4(0, 0, 0, 0);
 }
 

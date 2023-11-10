@@ -5,7 +5,8 @@ project "WalnutApp"
    targetdir "bin/%{cfg.buildcfg}"
    staticruntime "off"
 
-   files { "src/**.h", "src/**.cpp" }
+   files { "src/**.h", "src/**.cpp", "Resources/**.glsl"  }
+
 
    includedirs
    {
@@ -19,6 +20,7 @@ project "WalnutApp"
 
       "%{IncludeDir.VulkanSDK}",
       "%{IncludeDir.glm}",
+      "%{IncludeDir.assimp}"
    }
 
     links

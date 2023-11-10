@@ -34,7 +34,7 @@ namespace Hamster
             glm::vec3 vec3Value;
             glm::vec4 vec4Value;
             glm::mat4 mat4Value;
-            Texture2D* sampler2DValue = {};
+            GLHandle<Texture2D> sampler2DValue = {};
         };
 
         Type type;
@@ -45,7 +45,7 @@ namespace Hamster
         MaterialParameter(glm::vec3 _value) : type(Type::Vec3), vec3Value(_value) {}
         MaterialParameter(glm::vec4 _value) : type(Type::Vec4), vec4Value(_value) {}
         MaterialParameter(glm::mat4 _value) : type(Type::Mat4), mat4Value(_value) {}
-        MaterialParameter(Texture2D* _value) : type(Type::Sampler2D)
+        MaterialParameter(GLHandle<Texture2D> _value) : type(Type::Sampler2D)
         {
             sampler2DValue = _value;
         }
@@ -55,8 +55,8 @@ namespace Hamster
         {
             if (type == Type::Sampler2D)
             {
-                sampler2DValue->Unbind();
-                sampler2DValue = nullptr;
+                sampler2DValue.Get()->Unbind();
+                sampler2DValue = GLHandle<Texture2D>();
             }
         }
         MaterialParameter(const MaterialParameter& other) : type(other.type)
@@ -94,9 +94,10 @@ namespace Hamster
     class Material
     {
     public:
-        Material();
         // Create a material that uses a shader
         Material(GLHandle<Shader> _shader);
+
+        Material(const Material& other);
 
         // Set a parameter in the material by name. Can take a float, a vector, a matrix or a texture
         void SetParameter(const std::string& name, const MaterialParameter& parameter);
@@ -106,11 +107,12 @@ namespace Hamster
         ~Material();
 
         // Apply the material. This will bind the shader and set all the parameters in the shader
-        void Apply();
+        void Apply() const;
 
         // Get the default material. This material is used when no material is set
         static Material* DefaultMaterial();
-    
+
+        operator bool() {return shader.Get() != nullptr;}
     private:
         GLHandle<Shader> shader;
         std::map<std::string, MaterialParameter> parameters;
