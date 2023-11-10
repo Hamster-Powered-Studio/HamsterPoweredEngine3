@@ -12,3 +12,5 @@ bin-int/
 # Exclude
 !vendor/bin
 .idea/.idea.WalnutApp/.idea/
+
+WalnutApp/imgui.ini
