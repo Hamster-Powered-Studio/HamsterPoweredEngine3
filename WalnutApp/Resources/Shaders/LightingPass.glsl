@@ -72,7 +72,7 @@ void main() {
     
 
         //calculate all point lights
-        vec3 ambient = vec3(1 * albedo * AmbientOcclusion);
+        vec3 ambient = vec3(0.1 * albedo * AmbientOcclusion);
         vec3 diffuse = vec3(0.0);
         vec3 specular = vec3(0.0);
         vec3 viewDir = normalize(-position);

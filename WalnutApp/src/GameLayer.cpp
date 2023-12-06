@@ -17,7 +17,7 @@ void GameLayer::OnAttach()
 
     RenderCommand::SetDepthTestEnabled(true);
     RenderCommand::SetDepthFunc(LESS);
- 
+           
     RenderCommand::SetCullFaceEnabled(true);
     RenderCommand::SetCullFace(BACK);
     RenderCommand::SetFrontFace(CCW); 

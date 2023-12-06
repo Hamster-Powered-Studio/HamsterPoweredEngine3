@@ -25,6 +25,7 @@ void MeshRenderSystem::OnSystemBegin(entt::registry& registry)
     gBuffer.Get()->Invalidate();
     lightingPassMaterial = std::make_shared<Hamster::Material>(Hamster::ShaderLoader::Load("Resources/Shaders/LightingPass.glsl"));
     ssaoMaterial = std::make_shared<Hamster::Material>(Hamster::ShaderLoader::Load("Resources/Shaders/SSAO.glsl"));
+    ssaoBlurMaterial = std::make_shared<Hamster::Material>(Hamster::ShaderLoader::Load("Resources/Shaders/BoxBlur.glsl"));
 
     std::uniform_real_distribution<float> randomFloats(0.0, 1.0); // random floats between [0.0, 1.0]
     std::default_random_engine generator{};
@@ -60,8 +61,12 @@ void MeshRenderSystem::OnSystemBegin(entt::registry& registry)
 
     ssaoFBO = GraphicsResourceManager::ConstructObject<Hamster::RenderTarget2D>(Hamster::Application::GetViewportOutput().Get()->GetSize());
     ssaoFBO.Get()->AddAttachment(Hamster::RenderTarget2D::AttachmentType::COLOR16F);
+    ssaoFBO.Get()->AddAttachment(Hamster::RenderTarget2D::AttachmentType::COLOR16F);
     ssaoFBO.Get()->Invalidate();
-    
+
+    ssaoBlurFBO = GraphicsResourceManager::ConstructObject<Hamster::RenderTarget2D>(Hamster::Application::GetViewportOutput().Get()->GetSize());
+    ssaoBlurFBO.Get()->AddAttachment(Hamster::RenderTarget2D::AttachmentType::COLOR16F);
+    ssaoBlurFBO.Get()->Invalidate();
 }
 
 void MeshRenderSystem::OnSystemUpdate(entt::registry& registry, float ts)
@@ -112,8 +117,15 @@ void MeshRenderSystem::OnSystemUpdate(entt::registry& registry, float ts)
     ssaoMaterial->Apply();
     RenderCommand::DrawScreenPlane();
     EndScene();
-    
-    
+
+    //////////////////
+    // SSAO BLUR PASS
+    //////////////////
+    BeginScene(Hamster::View(), ssaoBlurFBO);
+    ssaoBlurMaterial->SetParameter("uSSAOInput", ssaoFBO.Get()->GetTexture());
+    ssaoBlurMaterial->Apply();
+    RenderCommand::DrawScreenPlane();
+    EndScene();
 
     //////////////////
     // LIGHTING PASS
@@ -160,7 +172,7 @@ void MeshRenderSystem::OnSystemUpdate(entt::registry& registry, float ts)
             }
             lightingPassMaterial->SetParameter("uDirectionalLightCount", (float)count);
         }
-    lightingPassMaterial->SetParameter("uSSAO", ssaoFBO.Get()->GetTexture());
+    lightingPassMaterial->SetParameter("uSSAO", ssaoBlurFBO.Get()->GetTexture());
     lightingPassMaterial->Apply();
     RenderCommand::DrawScreenPlane();
     EndScene();
