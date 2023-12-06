@@ -22,7 +22,9 @@ namespace Hamster
 
         const GLHandle<RenderTarget2D> Render();
         GLHandle<RenderTarget2D> GetRenderOutput();
-    
+
+        std::shared_ptr<RenderPass> operator[](int i) { return passes[i]; }
+        
     protected:
         std::vector<std::shared_ptr<RenderPass>> passes;
         

@@ -5,7 +5,6 @@ IncludeDir = {}
 
 IncludeDir["glm"] = "../vendor/glm"
 IncludeDir["assimp"] = "../vendor/assimp_premake/include"
---IncludeDir["assimpconfig"] = "../vendor/assimp/build/x64/include"
 
 LibraryDir = {}
 
@@ -16,6 +15,7 @@ group "Dependencies"
    include "vendor/imgui"
    include "vendor/glfw"
    include "vendor/assimp_premake"
+   include "vendor/entt"
 group ""
 
 group "Core"

@@ -1,25 +1,27 @@
 ﻿
 #define MAX_POINT_LIGHTS 32
+#define MAX_DIRECTIONAL_LIGHTS 4
 
 struct PointLight
 {
-    vec3 position;
-    vec3 colour;
-    float intensity;
+    vec3 Position;
+    vec3 Colour;
+    float Intensity;
+    float Radius;
 };
 
 struct DirectionalLight
 {
-    vec3 direction;
-    vec3 colour;
-    float intensity;
+    vec3 Direction;
+    vec3 Colour;
+    float Intensity;
 };
 
 
 // calculate the colour of a point in the scene
 vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 position)
 {
-    vec3 lightDir = light.position - position;
+    vec3 lightDir = light.Position - position;
     float distance = length(lightDir);
     lightDir = normalize(lightDir);
     float diffuseFactor = dot(lightDir, normalize(normal));
@@ -36,7 +38,7 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 position)
     // diffuse
     if (diffuseFactor > 0.0f)
     {
-        diffuseColour = vec4(light.colour * diffuseFactor * light.intensity * attenuation, 1.0f);
+        diffuseColour = vec4(light.Colour * diffuseFactor * light.Intensity * attenuation, 1.0f);
     
     }
     

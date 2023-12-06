@@ -16,6 +16,7 @@ project "HamsterPoweredEngine"
       "../vendor/imgui",
       "../vendor/glad",
       "../vendor/slot_map/slot_map",
+      "../vendor/entt/single_include/entt",
 
       "%{IncludeDir.glm}",
       "%{IncludeDir.assimp}",

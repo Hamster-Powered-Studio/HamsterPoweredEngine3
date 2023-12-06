@@ -1,10 +1,10 @@
 #shader vertex
 #version 460 core
 
-in vec3 vPos;
-in vec3 vNormal;
-in vec2 vTexCoord;
-in vec4 vColour;
+layout (location = 0) in vec3 vPos;
+layout (location = 1) in vec3 vNormal;
+layout (location = 2) in vec2 vTexCoord;
+layout (location = 3) in vec4 vColour;
 
 out vec3 fPos;
 out vec3 fVertexNormal;
@@ -33,6 +33,12 @@ void main() {
 
 #shader fragment
 #version 460 core
+#include "Resources/Shaders/LightDefinitions.glsl"
+
+uniform PointLight uPointLights[MAX_POINT_LIGHTS];
+uniform DirectionalLight uDirectionalLights[MAX_DIRECTIONAL_LIGHTS];
+uniform float uDirectionalLightCount;
+uniform float uPointLightCount;
 
 in vec3 fPos;
 in vec3 fVertexNormal;
@@ -50,13 +56,38 @@ layout (location = 5) out vec4 gDepth;
 
 uniform sampler2D uDiffuse;
 
+
 void main() {
     
     vec3 normal = normalize(fWSNormal);
     
-    vec4 diffuse = texture(uDiffuse, fTexCoord);
+    //vec4 diffuse = texture(uDiffuse, fTexCoord);
 
-    gFragColour = vec4(diffuse.xyz, 1.0);
+    vec4 albedo = vec4(1, 1, 1, 1);
+
+    //calculate all point lights
+    vec3 ambient = vec3(0.0);
+    vec3 diffuse = vec3(0.0);
+    vec3 specular = vec3(0.0);
+
+    //calculate ambient
+    ambient = 0.1 * albedo.xyz;
+
+    //calculate diffuse and specular
+    vec3 light = vec3(0, 0, 0);
+    for (int i = 0; i < uPointLightCount; i++)
+    {
+        if (uPointLights[i].Intensity > 0.0)
+        {
+            light += CalculatePointLight(uPointLights[i], normal, fPos);
+        }
+    }
+
+    diffuse = light * albedo.xyz;
+
+    vec4 result = vec4(ambient + diffuse + specular, 1.0);
+    
+    gFragColour = vec4(result.xyz, 1.0);
     gNormal = vec4(normal, 1.0);
     gPosition = vec4(fPos, 1.0);
     gEmission = vec4(0, 0, 0, 0);

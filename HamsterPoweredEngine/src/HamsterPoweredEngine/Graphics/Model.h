@@ -17,6 +17,8 @@ namespace Hamster
     class Model : public IDrawable, public ITransformable
     {
     public:
+        
+        
         // Import a model from a file path
         Model(std::string path);
         
@@ -30,9 +32,12 @@ namespace Hamster
         
         // Get the number of materials in the model. Currently, this is the same as the number of meshes
         int GetMaterialCount() const { return (int)meshes.size(); }
+
+        const std::vector<std::pair<Mesh, uint32_t>>& GetMeshes() {return meshes;};
         
         ~Model();
     private:
+        
         // A list of meshes in the model
         std::vector<std::pair<Mesh, uint32_t>> meshes;
 

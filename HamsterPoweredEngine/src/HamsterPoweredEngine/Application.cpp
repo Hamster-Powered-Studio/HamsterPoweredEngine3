@@ -134,7 +134,9 @@ namespace Hamster {
 		fontConfig.FontDataOwnedByAtlas = false;
 		ImFont* robotoFont = io.Fonts->AddFontFromMemoryTTF((void*)g_RobotoRegular, sizeof(g_RobotoRegular), 20.0f, &fontConfig);
 		io.FontDefault = robotoFont;
-		
+
+		m_ViewportOutput = GraphicsResourceManager::ConstructObject<RenderTarget2D>(GetWindowSize());
+		m_ViewportOutput.Get()->Initialize();
 	}
 
 	void Application::Shutdown()

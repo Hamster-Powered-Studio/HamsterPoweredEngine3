@@ -5,7 +5,7 @@
 #include "imgui.h"
 #include "HamsterPoweredEngine/Application.h"
 #include "HamsterPoweredEngine/Layer.h"
-#include "HamsterPoweredEngine/World.h"
+#include "HamsterPoweredEngine/Timestep.h"
 #include "HamsterPoweredEngine/Graphics/Material.h"
 #include "HamsterPoweredEngine/Graphics/Model.h"
 #include "HamsterPoweredEngine/Graphics/RenderTarget2D.h"
@@ -31,7 +31,7 @@ public:
 		if (size.x != viewportSize.x || size.y != viewportSize.y)
 		{
 			viewportSize = size;
-			Hamster::Application::OnViewportResized.Emit({viewportSize.x, viewportSize.y});
+			//Hamster::Application::OnViewportResized.Emit({viewportSize.x, viewportSize.y});
 			OnViewportResize();
 		}
 		if (auto img = Hamster::Application::GetViewportOutput().Get())
@@ -46,6 +46,7 @@ public:
 		ImGui::End();
 
 		ImGui::Begin("SceneTree");
+		
 		ImGui::End();
 	}
 

@@ -15,6 +15,7 @@ project "WalnutApp"
       "../vendor/glad",
       "../vendor/stb_image",
       "../vendor/slot_map/slot_map",
+      "../vendor/entt/single_include/entt",
 
       "../HamsterPoweredEngine/src",
 

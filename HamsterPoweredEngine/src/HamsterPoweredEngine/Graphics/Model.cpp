@@ -141,7 +141,7 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
         std::vector<GLHandle<Texture2D>> diffuseMaps = LoadMaterialTextures(material,
             aiTextureType_DIFFUSE, "texture_diffuse");
 
-        std::shared_ptr<Material> mat = std::make_shared<Material>(ShaderLoader::Load("Resources/Shaders/BasicUnlit.glsl"));
+        std::shared_ptr<Material> mat = std::make_shared<Material>(ShaderLoader::Load("Resources/Shaders/BasicLit.glsl"));
         if (diffuseMaps.size() > 0) mat->SetParameter("uTexture", diffuseMaps[0]);
         
         meshObj.SetMaterial(mat);

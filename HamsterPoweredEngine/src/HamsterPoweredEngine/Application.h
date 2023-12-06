@@ -9,6 +9,7 @@
 #include <glm/vec2.hpp>
 
 #include "Delegate.h"
+#include "Scene.h"
 #include "Graphics/GLHandle.h"
 #include "Graphics/RenderTarget2D.h"
 
@@ -50,6 +51,7 @@ namespace Hamster
             GLFWwindow* GetWindowHandle() const { return m_WindowHandle; }
             glm::vec2 GetWindowSize() const;
             static void SetVSync(bool enabled);
+            static std::shared_ptr<Scene> GetActiveScene() {return Get().m_ActiveScene; }
             
             static void SetViewportOutput(GLHandle<RenderTarget2D> target) { Get().m_ViewportOutput = target; }
             static GLHandle<RenderTarget2D> GetViewportOutput() { return Get().m_ViewportOutput; }
@@ -72,6 +74,7 @@ namespace Hamster
             std::function<void()> m_MenubarCallback;
 
             GLHandle<RenderTarget2D> m_ViewportOutput;
+            std::shared_ptr<Scene> m_ActiveScene;
         };
 
         // Implemented by CLIENT

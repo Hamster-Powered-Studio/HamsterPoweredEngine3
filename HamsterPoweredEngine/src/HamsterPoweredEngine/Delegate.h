@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include <functional>
+#include <iostream>
+#include <ostream>
 #include <slot_map.h>
 
 template<typename ...Params>
@@ -11,6 +13,7 @@ public:
     
     void Emit(Params... params)
     {
+        std::cout << callbacks.size() << std::endl;
         for (Callback func : callbacks)
         {
             if (func) func(params...);
