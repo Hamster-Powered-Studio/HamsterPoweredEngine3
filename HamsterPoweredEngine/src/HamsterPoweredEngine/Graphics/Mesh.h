@@ -55,14 +55,13 @@ namespace Hamster
         // Inherited from IDrawable. Sets the draw type of the mesh
         void SetDrawType(uint32_t _drawType) { drawType = _drawType; }
         void SubmitToRenderer(RenderPass& renderPass, const glm::mat4& parentTransform = glm::mat4(1.0)) override;
-
+        
     protected:
         std::shared_ptr<Material> material;
         GLHandle<VertexArray> vertexArray;
         GLHandle<VertexBuffer> vertexBuffer;
         GLHandle<IndexBuffer> indexBuffer;
         uint32_t drawType = GL_TRIANGLES;
-        
     };
 }
 

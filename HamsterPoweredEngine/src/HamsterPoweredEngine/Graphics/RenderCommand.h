@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <glm/vec4.hpp>
 
+#include "Mesh.h"
 #include "RenderObject.h"
 
 enum DepthFunc
@@ -35,4 +36,7 @@ public:
     static void SetDepthFunc(DepthFunc func);
     static void SetCullFace(CullFace face);
     static void SetFrontFace(FrontFace face);
+    static void DrawScreenPlane();
+
+    static inline std::unique_ptr<Hamster::Mesh> ScreenPlane;
 };

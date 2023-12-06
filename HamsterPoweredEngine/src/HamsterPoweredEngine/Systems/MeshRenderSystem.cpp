@@ -7,9 +7,19 @@
 #include "HamsterPoweredEngine/Components/TransformComponent.h"
 #include "HamsterPoweredEngine/Components/ViewComponent.h"
 #include "HamsterPoweredEngine/Graphics/RenderCommand.h"
+#include "HamsterPoweredEngine/Graphics/ShaderLoader.h"
 
 void MeshRenderSystem::OnSystemBegin(entt::registry& registry)
 {
+    gBuffer = GraphicsResourceManager::ConstructObject<Hamster::RenderTarget2D>(Hamster::Application::GetViewportOutput().Get()->GetSize());
+    gBuffer.Get()->AddAttachment(Hamster::RenderTarget2D::AttachmentType::COLOR); // Diffuse
+    gBuffer.Get()->AddAttachment(Hamster::RenderTarget2D::AttachmentType::COLOR16F); // Normal
+    gBuffer.Get()->AddAttachment(Hamster::RenderTarget2D::AttachmentType::COLOR16F); // Position
+    gBuffer.Get()->AddAttachment(Hamster::RenderTarget2D::AttachmentType::COLOR16F); // Specular
+    gBuffer.Get()->AddAttachment(Hamster::RenderTarget2D::AttachmentType::COLOR16F); // Emissive
+    gBuffer.Get()->AddAttachment(Hamster::RenderTarget2D::AttachmentType::DEPTH); // Depth
+    gBuffer.Get()->Invalidate();
+    lightingPassMaterial = std::make_shared<Hamster::Material>(Hamster::ShaderLoader::Load("Resources/Shaders/LightingPass.glsl"));
 }
 
 void MeshRenderSystem::OnSystemUpdate(entt::registry& registry, float ts)
@@ -18,7 +28,7 @@ void MeshRenderSystem::OnSystemUpdate(entt::registry& registry, float ts)
     auto cameras = registry.view<ViewComponent>();
     auto cam = cameras.front();
 
-    BeginScene(registry.get<ViewComponent>(cam).View, Hamster::Application::GetViewportOutput());
+    BeginScene(registry.get<ViewComponent>(cam).View, gBuffer);
 
     LightData lights;
     
@@ -47,10 +57,42 @@ void MeshRenderSystem::OnSystemUpdate(entt::registry& registry, float ts)
             renderobj.Transform = transform.GetTransform();
             renderobj.VAO = obj.GetVertexArrayHandle();
             renderobj.GLDrawMode = Hamster::RenderObject::DrawMode::TRIANGLES;
-            DrawObject(&renderobj, lights);
+            DrawObject(&renderobj);
         }
     }
     EndScene();
+
+    BeginScene(Hamster::View(), Hamster::Application::GetViewportOutput());
+
+    BindGBufferTextures(lightingPassMaterial.get());
+        {
+            int count = 0;
+            for (auto& light: lights.PointLights)
+            {
+                lightingPassMaterial->SetParameter("uPointLights[" + std::to_string(count) + "].Intensity", light.Light.Intensity);
+                lightingPassMaterial->SetParameter("uPointLights[" + std::to_string(count) + "].Radius", light.Light.Radius);
+                lightingPassMaterial->SetParameter("uPointLights[" + std::to_string(count) + "].Colour", light.Light.Colour);
+                lightingPassMaterial->SetParameter("uPointLights[" + std::to_string(count) + "].Position", light.Position);
+                count++;
+            }
+            lightingPassMaterial->SetParameter("uPointLightCount", (float)count);
+        }
+            
+        {
+            int count = 0;
+            for (auto& light: lights.DirLights)
+            {
+                lightingPassMaterial->SetParameter("uDirectionalLights[" + std::to_string(count) + "].Intensity", light.Light.Intensity);
+                lightingPassMaterial->SetParameter("uDirectionalLights[" + std::to_string(count) + "].Colour", light.Light.Colour);
+                lightingPassMaterial->SetParameter("uDirectionalLights[" + std::to_string(count) + "].Direction", light.Direction);
+                count++;
+            }
+            lightingPassMaterial->SetParameter("uDirectionalLightCount", (float)count);
+        }
+    lightingPassMaterial->Apply();
+    RenderCommand::DrawScreenPlane();
+    EndScene();
+    
 }
 
 void MeshRenderSystem::OnSystemEnd(entt::registry& registry)
@@ -70,7 +112,7 @@ void MeshRenderSystem::BeginScene(Hamster::View view, GLHandle<Hamster::RenderTa
     RenderCommand::Clear();
 }
 
-void MeshRenderSystem::DrawObject(Hamster::RenderObject* object, std::optional<LightData> lights)
+void MeshRenderSystem::DrawObject(Hamster::RenderObject* object)
 {
     auto mat = object->Material;
     if (mat)
@@ -86,37 +128,8 @@ void MeshRenderSystem::DrawObject(Hamster::RenderObject* object, std::optional<L
         mat->SetParameter("uProjection", projection);
         mat->SetParameter("uResolution", output.Get()->GetSize());
         mat->SetParameter("uTime", Hamster::Application::GetTime());
-
-        if (lights.has_value())
-        {
-            {
-                int count = 0;
-                for (auto& light: lights->PointLights)
-                {
-                    mat->SetParameter("uPointLights[" + std::to_string(count) + "].Intensity", light.Light.Intensity);
-                    mat->SetParameter("uPointLights[" + std::to_string(count) + "].Radius", light.Light.Radius);
-                    mat->SetParameter("uPointLights[" + std::to_string(count) + "].Colour", light.Light.Colour);
-                    mat->SetParameter("uPointLights[" + std::to_string(count) + "].Position", light.Position);
-                    count++;
-                }
-                mat->SetParameter("uPointLightCount", (float)count);
-            }
-            
-            {
-                int count = 0;
-                for (auto& light: lights->DirLights)
-                {
-                    mat->SetParameter("uDirectionalLights[" + std::to_string(count) + "].Intensity", light.Light.Intensity);
-                    mat->SetParameter("uDirectionalLights[" + std::to_string(count) + "].Colour", light.Light.Colour);
-                    mat->SetParameter("uDirectionalLights[" + std::to_string(count) + "].Direction", light.Direction);
-                    count++;
-                }
-                mat->SetParameter("uDirectionalLightCount", (float)count);
-            }
-            
-        }
-
-            
+        
+        
         object->Material->Apply();
     }
     object->Material->Apply();
@@ -130,3 +143,13 @@ void MeshRenderSystem::EndScene()
     currentView = Hamster::View();
 }
 
+void MeshRenderSystem::BindGBufferTextures(Hamster::Material* material)
+{
+    auto gBuf = gBuffer.Get();
+    material->SetParameter("uGBuffer.Diffuse", gBuf->GetTexture(0));
+    material->SetParameter("uGBuffer.Normal", gBuf->GetTexture(1));
+    material->SetParameter("uGBuffer.Position", gBuf->GetTexture(2));
+    material->SetParameter("uGBuffer.Specular", gBuf->GetTexture(3));
+    material->SetParameter("uGBuffer.Emissive", gBuf->GetTexture(4));
+    material->SetParameter("uGBuffer.Depth", gBuf->GetTexture(5));
+}

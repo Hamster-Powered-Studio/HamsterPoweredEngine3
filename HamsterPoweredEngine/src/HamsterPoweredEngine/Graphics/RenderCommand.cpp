@@ -1,4 +1,6 @@
 ﻿#include "RenderCommand.h"
+
+#include "Plane.h"
 #include "glad/gl.h"
 
 void RenderCommand::SetClearColor(glm::vec4 color)
@@ -52,4 +54,13 @@ void RenderCommand::SetCullFace(CullFace face)
 void RenderCommand::SetFrontFace(FrontFace face)
 {
     glFrontFace(face);
+}
+
+void RenderCommand::DrawScreenPlane()
+{
+    if (!ScreenPlane) ScreenPlane.reset(new Hamster::Plane());
+    ScreenPlane->GetVertexArray().Bind();
+    ScreenPlane->GetVertexArray().GetIndexBuffer().Get()->Bind();
+
+    DrawElements(Hamster::RenderObject::DrawMode::TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }

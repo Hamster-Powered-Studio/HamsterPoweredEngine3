@@ -10,12 +10,12 @@
 // glsl gbuffer struct
 struct GBuffer
 {
-    sampler2D diffuse;
-    sampler2D normal;
-    sampler2D position;
-    sampler2D specular;
-    sampler2D emission;
-    sampler2D depth;
+    sampler2D Diffuse;
+    sampler2D Normal;
+    sampler2D Position;
+    sampler2D Specular;
+    sampler2D Emission;
+    sampler2D Depth;
     
 };
 
