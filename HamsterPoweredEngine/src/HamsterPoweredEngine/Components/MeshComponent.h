@@ -4,5 +4,6 @@
 
 struct MeshComponent
 {
-    Hamster::Model Model = Hamster::Model("Resources/Models/Suzanne.obj");
+    MeshComponent(const std::string& path = "Resources/Models/Gun.obj") : Model(path) {}
+    Hamster::Model Model;
 };

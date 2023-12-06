@@ -62,8 +62,9 @@ namespace Hamster
         {
             attachment.Texture.Get()->Regenerate(size);
         
-            if (attachment.Type == AttachmentType::COLOR || attachment.Type == AttachmentType::COLOR16F)
+            if (attachment.Type == AttachmentType::COLOR || attachment.Type == AttachmentType::COLOR16F || attachment.Type == AttachmentType::FLOAT || attachment.Type == AttachmentType::FLOAT16F || attachment.Type == AttachmentType::FLOAT32F)
             {
+                
                 int index = (int)drawbuffers.size();
                 glFramebufferTexture( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, attachment.Texture.Get()->GetRendererID(), 0);
                 drawbuffers.push_back(GL_COLOR_ATTACHMENT0 + index);
@@ -175,6 +176,18 @@ namespace Hamster
         case AttachmentType::COLOR:
             format = TextureFormat::RGBA;
             internalFormat = InternalTextureFormat::RGBA8;
+            break;
+        case AttachmentType::FLOAT:
+            format = TextureFormat::R;
+            internalFormat = InternalTextureFormat::R8;
+            break;
+        case AttachmentType::FLOAT16F:
+            format = TextureFormat::R;
+            internalFormat = InternalTextureFormat::R16F;
+            break;
+        case AttachmentType::FLOAT32F:
+            format = TextureFormat::R;
+            internalFormat = InternalTextureFormat::R32F;
             break;
         case AttachmentType::DEPTH:
             format = TextureFormat::DEPTH;

@@ -9,6 +9,9 @@
 #include "Image.h"
 #include <glm/glm.hpp>
 
+#include "HamsterPoweredEngine/Application.h"
+#include "HamsterPoweredEngine/Application.h"
+
 
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
@@ -31,7 +34,7 @@ namespace Hamster
     
     
         // Create an empty texture with the given size
-        glTexImage2D( GL_TEXTURE_2D, 0, (int)internalFormat, (uint32_t)_size.x, (uint32_t)_size.y, 0, (int)format, GL_UNSIGNED_BYTE, nullptr );
+        glTexImage2D( GL_TEXTURE_2D, 0, (int)internalFormat, (uint32_t)_size.x, (uint32_t)_size.y, 0, (int)format, GetDataType(), nullptr );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     }
@@ -67,7 +70,7 @@ namespace Hamster
             }
             
             // Create the texture
-            glTexImage2D( GL_TEXTURE_2D, 0, GetInternalFormat(), width, height, 0, GetFormat(), GL_UNSIGNED_BYTE, data );
+            glTexImage2D( GL_TEXTURE_2D, 0, GetInternalFormat(), width, height, 0, GetFormat(), GetDataType(), data );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
@@ -106,7 +109,7 @@ namespace Hamster
         }
         
         // Create the texture
-        glTexImage2D( GL_TEXTURE_2D, 0, (int)GetInternalFormat(), (int)_image.GetWidth(), (int)_image.GetHeight(), 0, GetFormat(), GL_UNSIGNED_BYTE, _image.GetData().data() );
+        glTexImage2D( GL_TEXTURE_2D, 0, (int)GetInternalFormat(), (int)_image.GetWidth(), (int)_image.GetHeight(), 0, GetFormat(), GetDataType(), _image.GetData().data() );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     }
@@ -123,7 +126,7 @@ namespace Hamster
         height = (int)_size.y;
         std::cout << "Regenerating texture: " << width << "x" << height << std::endl;
         // Overwrite the texture buffer with an empty texture
-        glTexImage2D( GL_TEXTURE_2D, 0, (int)GetInternalFormat(), (int)_size.x, (int)_size.y, 0, GetFormat(), GL_UNSIGNED_BYTE, nullptr );
+        glTexImage2D( GL_TEXTURE_2D, 0, (int)GetInternalFormat(), (int)_size.x, (int)_size.y, 0, GetFormat(), GetDataType(), nullptr );
     }
 
     void Texture2D::Bind(uint32_t _slot) const
@@ -144,7 +147,7 @@ namespace Hamster
         width = (int)_size.x;
         height = (int)_size.y;
         // Overwrite the texture buffer with the given data
-        glTexImage2D( GL_TEXTURE_2D, 0, (int)GetInternalFormat(), width, height, 0, GetFormat(), GL_UNSIGNED_BYTE, _data );
+        glTexImage2D( GL_TEXTURE_2D, 0, (int)GetInternalFormat(), width, height, 0, GetFormat(), GetDataType(), _data );
     }
 
     uint32_t Texture2D::GetFormat() const
@@ -155,6 +158,32 @@ namespace Hamster
     uint32_t Texture2D::GetInternalFormat() const
     {
         return (uint32_t)internalFormat;
+    }
+
+    uint32_t Texture2D::GetDataType() const
+    {
+        switch (internalFormat)
+        {
+        case InternalTextureFormat::R8:
+        case InternalTextureFormat::RG8:
+        case InternalTextureFormat::RGB8:
+        case InternalTextureFormat::RGBA8:
+        case InternalTextureFormat::DEPTH24:
+        case InternalTextureFormat::STENCIL8:
+        case InternalTextureFormat::DEPTH24_STENCIL8:
+            return GL_UNSIGNED_BYTE;
+            break;
+        case InternalTextureFormat::R16F:
+        case InternalTextureFormat::R32F:
+        case InternalTextureFormat::RG16F:
+        case InternalTextureFormat::RG32F:
+        case InternalTextureFormat::RGB16F:
+        case InternalTextureFormat::RGB32F:
+        case InternalTextureFormat::RGBA16F:
+        case InternalTextureFormat::RGBA32F:
+            return GL_FLOAT;
+            break;
+        }
     }
 
     void Texture2D::SetWrap(TextureWrap _wrap)

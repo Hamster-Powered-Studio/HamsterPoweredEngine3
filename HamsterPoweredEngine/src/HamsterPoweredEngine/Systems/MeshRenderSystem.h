@@ -38,9 +38,15 @@ public:
     
     GLHandle<Hamster::RenderTarget2D> gBuffer;
     GLHandle<Hamster::RenderTarget2D> output;
+    GLHandle<Hamster::RenderTarget2D> ssaoFBO;
+    GLHandle<Hamster::Texture2D> noiseTexture;
+    std::vector<glm::vec3> ssaoKernel;
     std::shared_ptr<Hamster::Material> lightingPassMaterial;
+    std::shared_ptr<Hamster::Material> ssaoMaterial;
     Hamster::View currentView;
 
+    float ssaoRadius = 1.f;
+    float ssaoBias = 0.025f; 
 
 };
 

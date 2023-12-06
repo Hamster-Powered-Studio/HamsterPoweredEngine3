@@ -41,7 +41,17 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 position)
         diffuseColour = vec4(light.Colour * diffuseFactor * light.Intensity * attenuation, 1.0f);
     
     }
-    
     return (diffuseColour).xyz;
-    
+}
+
+vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal)
+{
+    vec3 lightDir = normalize(-light.Direction);
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    // specular shading
+    //vec3 HalfwayVector = normalize(lightDir + viewDir);
+    //float spec = pow(max(dot(normal, HalfwayVector), 0.0), 128.0f);
+
+    return (diff * light.Colour) * light.Intensity;
 }

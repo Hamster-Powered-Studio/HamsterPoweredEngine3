@@ -25,7 +25,7 @@ namespace Hamster
         RG8 = GL_RG8,
         RGB8 = GL_RGB8,
         RGBA8 = GL_RGBA8,
-        RGBA16F = GL_RGB16F,
+        RGBA16F = GL_RGBA16F,
         RGBA32F = GL_RGBA32F,
         R16F = GL_R16F,
         R32F = GL_R32F,
@@ -95,6 +95,8 @@ namespace Hamster
         uint32_t GetFormat() const;
         // Get the texture internal format
         uint32_t GetInternalFormat() const;
+
+        uint32_t GetDataType() const;
 
         // Set the texture wrap mode
         void SetWrap(TextureWrap _wrap);

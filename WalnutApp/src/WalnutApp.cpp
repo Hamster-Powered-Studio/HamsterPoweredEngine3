@@ -59,13 +59,13 @@ public:
 	std::unique_ptr<Hamster::RenderPass> desaturate;
 
 	
-	virtual void OnAttach() override
+	virtual void OnAttach() override 
 	{
 	}
 	
 	virtual void OnUpdate(float ts) override
 	{
-		Timestep timestep(ts);
+		Timestep timestep(ts);  
 
 
 	}

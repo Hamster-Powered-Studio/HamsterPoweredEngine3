@@ -26,6 +26,9 @@ namespace Hamster
         {
             COLOR = GL_COLOR_ATTACHMENT0,
             COLOR16F = 0,
+            FLOAT,
+            FLOAT16F,
+            FLOAT32F,
             DEPTH = GL_DEPTH_ATTACHMENT,
             STENCIL = GL_STENCIL_ATTACHMENT,
             DEPTH_STENCIL = GL_DEPTH_STENCIL_ATTACHMENT,

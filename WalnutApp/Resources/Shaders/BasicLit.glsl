@@ -14,6 +14,10 @@ out vec3 fWSNormal;
 
 uniform mat4 uModel;
 uniform mat4 uViewProjection;
+uniform vec3 uCameraPosition;
+uniform vec3 uCameraDirection;
+uniform mat4 uView;
+uniform mat4 uProjection;
 
 
 void main() {
@@ -21,12 +25,18 @@ void main() {
     fColour = vColour;
 
     fVertexNormal = normalize(vNormal);
-    fWSNormal = vec3(mat4(transpose(inverse(uModel))) * vec4(vNormal, 1.0));
+    //fWSNormal = vec3(mat4(transpose(inverse(uModel))) * vec4(vNormal, 1.0));
+    //fWSNormal = normalize(vec4(uView * vec4(fWSNormal, 1.0)).xyz);
+    
+    mat3 normalMatrix = transpose(inverse(mat3(uView * uModel)));
+    fWSNormal = normalize(normalMatrix * vNormal);
 
     mat4 modelViewProjection = uViewProjection * uModel;
-    gl_Position = modelViewProjection * vec4(vPos, 1.0);
     
-    fPos = vec3(uModel * vec4(vPos, 1.0));
+    
+    vec4 viewPos = uView * uModel * vec4(vPos, 1.0);
+    fPos = viewPos.xyz;
+    gl_Position = uProjection * viewPos;
 }
 
 
@@ -63,5 +73,6 @@ void main() {
     gPosition = vec4(fPos, 1.0);
     gEmission = vec4(0, 0, 0, 0);
     gSpecular = vec4(0, 0, 0, 0);
+    
 }
 

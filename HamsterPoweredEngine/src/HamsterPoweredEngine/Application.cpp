@@ -179,9 +179,9 @@ namespace Hamster {
 			glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
 			glClear(GL_COLOR_BUFFER_BIT);
 			
+			
 			for (auto& layer : m_LayerStack)
 				layer->OnUpdate(m_TimeStep);
-			
 
 			// Start the Dear ImGui frame
 			ImGui_ImplOpenGL3_NewFrame();
@@ -239,11 +239,14 @@ namespace Hamster {
 					}
 				}
 
+				
 				for (auto& layer : m_LayerStack)
 					layer->OnUIRender();
 
 				ImGui::End();
 			}
+
+
 			
 			// Rendering
 			ImGui::Render();

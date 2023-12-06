@@ -47,6 +47,10 @@ uniform DirectionalLight uDirectionalLights[MAX_DIRECTIONAL_LIGHTS];
 uniform GBuffer uGBuffer;
 uniform float uPointLightCount;
 uniform float uDirectionalLightCount;
+uniform mat4 uView;
+uniform mat4 uProjection;
+uniform vec2 uResolution;
+uniform sampler2D uSSAO;
 
 
 layout (location = 0) out vec4 FragColor;
@@ -58,35 +62,37 @@ void main() {
     vec4 albedo = texture(uGBuffer.Diffuse, fTexCoord);
     vec3 normal = texture(uGBuffer.Normal, fTexCoord).rgb;
     vec3 position = texture(uGBuffer.Position, fTexCoord).rgb;
-    
-    
+
+    float AmbientOcclusion = texture(uSSAO, fTexCoord).r;
+
+
     if (albedo.a < 0.1) {
         discard;
     }
     
 
         //calculate all point lights
-        vec3 ambient = vec3(0.0);
+        vec3 ambient = vec3(1 * albedo * AmbientOcclusion);
         vec3 diffuse = vec3(0.0);
         vec3 specular = vec3(0.0);
-
-        //calculate ambient
-        ambient = 0.1 * albedo.xyz;
+        vec3 viewDir = normalize(-position);
 
         //calculate diffuse and specular
-        vec3 light = vec3(0, 0, 0);
+        vec3 pointLight = vec3(0, 0, 0);
         for (int i = 0; i < uPointLightCount; i++)
         {
-            if (uPointLights[i].Intensity > 0.0)
-            {
-                light += CalculatePointLight(uPointLights[i], normal, position);
-            }
+            pointLight += CalculatePointLight(uPointLights[i], normal, position);
         }
 
-        diffuse = light * albedo.xyz;
+        vec3 dirLight = vec3(0, 0, 0);
+        for (int i = 0; i < uDirectionalLightCount; i++)
+        {
+            dirLight += CalculateDirectionalLight(uDirectionalLights[i], normal);
+        }
+
+        diffuse = (pointLight + dirLight) * albedo.xyz;
 
         vec4 result = vec4(ambient + diffuse + specular, 1.0);
-
         FragColor = vec4(result.xyz, 1.0);
     
 }

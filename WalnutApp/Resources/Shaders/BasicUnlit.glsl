@@ -14,8 +14,9 @@ out vec3 fWSNormal;
 
 uniform mat4 uModel;
 uniform mat4 uViewProjection;
-
-
+uniform mat4 uView;
+uniform mat4 uProjection;
+uniform vec2 uResolution;
 
 void main() {
     fTexCoord = vTexCoord;
