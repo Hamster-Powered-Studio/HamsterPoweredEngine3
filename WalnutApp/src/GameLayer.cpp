@@ -24,7 +24,7 @@ void GameLayer::OnAttach()
     
     scene = std::make_shared<Scene3D>();
     scene->InitializeDefaultSystems();
-    
+    Application::SetVSync(false);
 }
 
 void GameLayer::OnDetach()  
@@ -38,6 +38,7 @@ void GameLayer::OnUpdate(float ts)
     
     Layer::OnUpdate(ts);
     // Update world node and child nodes
+    
     scene->_updateScene(ts);
      
     

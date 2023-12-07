@@ -26,7 +26,7 @@ void Scene3D::InitializeDefaultSystems()
     model.GetComponent<TransformComponent>().SetPosition({0, 0, -1});
 
 
-    auto model2 = CreateEntity();
+    auto model2 = CreateEntity(); 
     auto m2 = model2.AddComponent<MeshComponent>("Resources/Models/Platform.obj");
     model2.GetComponent<TransformComponent>().SetScale(2.f);
     model2.GetComponent<TransformComponent>().SetRotation({0, 0, 0});

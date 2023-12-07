@@ -50,7 +50,7 @@ public:
 		ImGui::End();
 	}
 
-	void OnViewportResize()
+	void OnViewportResize()   
 	{
 		
 	}
@@ -61,7 +61,7 @@ public:
 	
 	virtual void OnAttach() override 
 	{
-	}
+	}   
 	
 	virtual void OnUpdate(float ts) override
 	{
@@ -77,7 +77,7 @@ Hamster::Application* Hamster::CreateApplication(int argc, char** argv)
 	spec.Name = "Hamster Powered Engine";
 	
 	Hamster::Application* app = new Hamster::Application(spec);
-	app->PushLayer<GameLayer>();
+	app->PushLayer<GameLayer>();    
 	app->PushLayer<EditorLayer>();
 	app->SetMenubarCallback([app]()
 	{

@@ -4,6 +4,7 @@ project "HamsterPoweredEngine"
    cppdialect "C++17"
    targetdir "bin/%{cfg.buildcfg}"
    staticruntime "off"
+   flags { "MultiProcessorCompile" }
 
    files { "src/**.h", "src/**.cpp", "../vendor/glad/src/gl.c", "../vendor/imgui/backends/imgui_impl_opengl3.cpp"}
 
@@ -31,7 +32,7 @@ project "HamsterPoweredEngine"
        "assimp"
    }
 
-   
+
 
    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
    objdir ("../bin-int/" .. outputdir .. "/%{prj.name}")

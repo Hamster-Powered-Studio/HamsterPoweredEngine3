@@ -6,7 +6,7 @@ project "WalnutApp"
    staticruntime "off"
 
    files { "src/**.h", "src/**.cpp", "Resources/**.glsl"  }
-
+   flags { "MultiProcessorCompile"}
 
    includedirs
    {

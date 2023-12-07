@@ -72,7 +72,7 @@ namespace Hamster {
 
 	void Application::SetVSync(bool enabled)
 	{
-		glfwSwapInterval((int)!enabled);
+		glfwSwapInterval((int)enabled);
 	}
 
 	void Application::Init()
@@ -178,6 +178,7 @@ namespace Hamster {
 			glViewport(0, 0, display_w, display_h);
 			glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
 			glClear(GL_COLOR_BUFFER_BIT);
+
 			
 			
 			for (auto& layer : m_LayerStack)
@@ -268,7 +269,7 @@ namespace Hamster {
 
 			float time = GetTime();
 			m_FrameTime = time - m_LastFrameTime;
-			m_TimeStep = glm::min<float>(m_FrameTime, 0.0333f);
+			m_TimeStep = m_FrameTime;
 			m_LastFrameTime = time;
 			
 		}
